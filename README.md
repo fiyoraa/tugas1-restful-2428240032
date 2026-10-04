@@ -66,11 +66,11 @@ response error menggunakan format:
 }
 ```
 
-data awal berjumlah 18 record dan disimpan dalam array di memori. data akan kembali ke data awal ketika server dijalankan ulang.
+data awal berjumlah 18 record dan disimpan dalam array di memori. data akan kembali ke data awal ketika server dijalankan ulang
 
 ## pengujian api
 
-pengujian dapat dilakukan menggunakan browser untuk endpoint `get`, atau menggunakan postman dan thunder client untuk seluruh method.
+pengujian dapat dilakukan menggunakan browser untuk endpoint `get`, atau menggunakan postman dan thunder client untuk seluruh method
 
 | no. | method | endpoint atau skenario | status |
 | --- | --- | --- | --- |
@@ -84,4 +84,8 @@ pengujian dapat dilakukan menggunakan browser untuk endpoint `get`, atau menggun
 | 8 | put | `/blood-stocks/99` | 404 |
 | 9 | delete | `/blood-stocks/1` | 200 |
 | 10 | delete | `/blood-stocks/99` | 404 |
+
+file koleksi pengujian postman tersedia pada file `2428240032_Postman.json`
+koleksi postman tersebut menggunakan url vercel sebagai `baseurl` dan berisi 10 skenario pengujian pada tabel di atas
+
 
