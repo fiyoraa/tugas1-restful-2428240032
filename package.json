@@ -1,0 +1,22 @@
+{
+  "name": "tugas1-restful-api-2428240032",
+  "version": "1.0.0",
+  "description": "RESTful API stok darah PMI untuk Tugas 1 SI5B",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "keywords": [
+    "express",
+    "restful-api"
+  ],
+  "author": "Muhammad Luthfi Hilmy",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
