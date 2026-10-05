@@ -18,7 +18,7 @@ npm run dev
 
 server berjalan (local) di `http://localhost:3000`.
 
-akses api online di (vercell):
+akses api online di (vercel):
 
 `https://tugas1-restful-2428240032.vercel.app/`
 
@@ -46,7 +46,7 @@ body `post` dan `put` wajib berupa json dengan field:
 }
 ```
 
-response `post`, `put`, dan `delete` menggunakan format:
+respon `post`, `put`, dan `delete` menggunakan format:
 
 ```json
 {
@@ -56,7 +56,7 @@ response `post`, `put`, dan `delete` menggunakan format:
 }
 ```
 
-response error menggunakan format:
+respon error menggunakan format:
 
 ```json
 {
@@ -66,7 +66,7 @@ response error menggunakan format:
 }
 ```
 
-data awal berjumlah 18 record dan disimpan dalam array di memori. data akan kembali ke data awal ketika server dijalankan ulang
+data awal berjumlah 18 record dan disimpan dalam array. data akan kembali ke data awal ketika server dijalankan ulang
 
 ## pengujian api
 
@@ -85,7 +85,7 @@ pengujian dapat dilakukan menggunakan browser untuk endpoint `get`, atau menggun
 | 9 | delete | `/blood-stocks/1` | 200 |
 | 10 | delete | `/blood-stocks/99` | 404 |
 
-file koleksi pengujian postman tersedia pada file `2428240032_Postman.json`
-koleksi postman tersebut menggunakan url vercel sebagai `baseurl` dan berisi 10 skenario pengujian pada tabel di atas
+file pengujian postman tersedia pada file `2428240032_Postman.json`
+file postman tersebut menggunakan url vercel sebagai `baseurl` dan berisi 10 skenario pengujian pada tabel di atas
 
 
