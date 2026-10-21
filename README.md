@@ -70,7 +70,7 @@ data awal berjumlah 18 record dan disimpan dalam array. data akan kembali ke dat
 
 ## pengujian api
 
-pengujian dapat dilakukan menggunakan browser untuk endpoint `get`, atau menggunakan postman dan thunder client untuk seluruh method
+pengujian dapat dilakukan menggunakan browser untuk endpoint `get`, atau menggunakan postman dan thunder client untukk seluruh method
 
 | no. | method | endpoint atau skenario | status |
 | --- | --- | --- | --- |
