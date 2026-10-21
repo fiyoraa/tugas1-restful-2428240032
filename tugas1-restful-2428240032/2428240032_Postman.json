@@ -1,0 +1,555 @@
+{
+  "info": {
+    "_postman_id": "b6e2d3c4-7f31-4a7d-9f68-2428240032",
+    "name": "tugas 1 restful api - stok darah pmi",
+    "description": "koleksi pengujian endpoint dan automated test topik 7.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "00 - get informasi api",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": []
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status informasi API adalah 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('respons informasi API memiliki identitas dan endpoint', function () {",
+              "    const body = pm.response.json();",
+              "    pm.expect(body).to.have.property('nama');",
+              "    pm.expect(body).to.have.property('nim');",
+              "    pm.expect(body.nim).to.eql('2428240032');",
+              "    pm.expect(body).to.have.property('endpoints');",
+              "    pm.expect(body.endpoints).to.be.an('array');",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "01 - get seluruh data",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/blood-stocks",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "blood-stocks"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status berhasil 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('respons berupa array stok darah', function () {",
+              "    const body = pm.response.json();",
+              "    pm.expect(body).to.be.an('array');",
+              "    if (body.length > 0) {",
+              "        pm.expect(body[0]).to.have.property('id');",
+              "        pm.expect(body[0]).to.have.property('golonganDarah');",
+              "    }",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "02 - get data berdasarkan id",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/blood-stocks/1",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "blood-stocks",
+            "1"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status berhasil 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('respons memiliki data stok dengan id 1', function () {",
+              "    const body = pm.response.json();",
+              "    pm.expect(body).to.be.an('object');",
+              "    pm.expect(body.id).to.eql(1);",
+              "    pm.expect(body).to.have.property('golonganDarah');",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "03 - get id tidak ditemukan",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/blood-stocks/99",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "blood-stocks",
+            "99"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status data tidak ditemukan 404', function () {",
+              "    pm.response.to.have.status(404);",
+              "});",
+              "",
+              "pm.test('respons error memiliki format yang benar', function () {",
+              "    const body = pm.response.json();",
+              "    pm.expect(body.status).to.eql('error');",
+              "    pm.expect(body).to.have.property('message');",
+              "    pm.expect(body.data).to.eql(null);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "04 - get filter golongan darah",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/blood-stocks?golonganDarah=O",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "blood-stocks"
+          ],
+          "query": [
+            {
+              "key": "golonganDarah",
+              "value": "O"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status filter berhasil 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('semua data hasil filter bergolongan O', function () {",
+              "    const body = pm.response.json();",
+              "    pm.expect(body).to.be.an('array');",
+              "    body.forEach(function (stock) {",
+              "        pm.expect(stock.golonganDarah).to.eql('O');",
+              "    });",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "05 - post data lengkap",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "x-api-key",
+            "value": "{{api_key}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"golonganDarah\": \"AB\",\n  \"rhesus\": \"+\",\n  \"jumlahKantong\": 20,\n  \"lokasi\": \"Muhammad Luthfi Hilmy 2428240032\",\n  \"tanggalUpdate\": \"2026-10-21\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/blood-stocks",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "blood-stocks"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status data berhasil dibuat 201', function () {",
+              "    pm.response.to.have.status(201);",
+              "});",
+              "",
+              "pm.test('respons POST memiliki data stok baru', function () {",
+              "    const body = pm.response.json();",
+              "    pm.expect(body.status).to.eql('success');",
+              "    pm.expect(body.data).to.be.an('object');",
+              "    pm.expect(body.data).to.have.property('id');",
+              "    pm.expect(body.data.lokasi).to.include('2428240032');",
+              "});",
+              "",
+              "const response = pm.response.json();",
+              "pm.environment.set('created_id', response.data.id);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "06 - post tanpa api key",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"golonganDarah\": \"AB\",\n  \"rhesus\": \"+\",\n  \"jumlahKantong\": 20,\n  \"lokasi\": \"Muhammad Luthfi Hilmy 2428240032\",\n  \"tanggalUpdate\": \"2026-10-21\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/blood-stocks",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "blood-stocks"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status API key tidak tersedia adalah 401', function () {",
+              "    pm.response.to.have.status(401);",
+              "});",
+              "",
+              "pm.test('respons API key memiliki format error', function () {",
+              "    const body = pm.response.json();",
+              "    pm.expect(body.status).to.eql('error');",
+              "    pm.expect(body.data).to.eql(null);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "07 - post field wajib kosong",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "x-api-key",
+            "value": "{{api_key}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"golonganDarah\": \"O\",\n  \"rhesus\": \"+\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/blood-stocks",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "blood-stocks"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status validasi body 400', function () {",
+              "    pm.response.to.have.status(400);",
+              "});",
+              "",
+              "pm.test('respons validasi memiliki format error', function () {",
+              "    const body = pm.response.json();",
+              "    pm.expect(body.status).to.eql('error');",
+              "    pm.expect(body.message).to.include('wajib diisi');",
+              "    pm.expect(body.data).to.eql(null);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "08 - put data hasil post",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "x-api-key",
+            "value": "{{api_key}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"golonganDarah\": \"O\",\n  \"rhesus\": \"+\",\n  \"jumlahKantong\": 50,\n  \"lokasi\": \"Muhammad Luthfi Hilmy 2428240032 - updated\",\n  \"tanggalUpdate\": \"2026-10-21\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/blood-stocks/{{created_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "blood-stocks",
+            "{{created_id}}"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status data berhasil diubah 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('respons PUT berisi data yang diperbarui', function () {",
+              "    const body = pm.response.json();",
+              "    pm.expect(body.status).to.eql('success');",
+              "    pm.expect(String(body.data.id)).to.eql(String(pm.environment.get('created_id')));",
+              "    pm.expect(body.data.jumlahKantong).to.eql(50);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "09 - put id tidak ditemukan",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "x-api-key",
+            "value": "{{api_key}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"golonganDarah\": \"O\",\n  \"rhesus\": \"+\",\n  \"jumlahKantong\": 50,\n  \"lokasi\": \"UDD PMI Kota Palembang\",\n  \"tanggalUpdate\": \"2026-10-21\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/blood-stocks/99",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "blood-stocks",
+            "99"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status data tidak ditemukan 404', function () {",
+              "    pm.response.to.have.status(404);",
+              "});",
+              "",
+              "pm.test('respons PUT error memiliki data null', function () {",
+              "    const body = pm.response.json();",
+              "    pm.expect(body.status).to.eql('error');",
+              "    pm.expect(body.data).to.eql(null);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "10 - delete data hasil post",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "x-api-key",
+            "value": "{{api_key}}"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/blood-stocks/{{created_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "blood-stocks",
+            "{{created_id}}"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status data berhasil dihapus 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('respons DELETE success memiliki data null', function () {",
+              "    const body = pm.response.json();",
+              "    pm.expect(body.status).to.eql('success');",
+              "    pm.expect(body.data).to.eql(null);",
+              "    pm.expect(body.message).to.include('berhasil dihapus');",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "11 - delete id tidak ditemukan",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "x-api-key",
+            "value": "{{api_key}}"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/blood-stocks/99",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "blood-stocks",
+            "99"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status delete data tidak ditemukan 404', function () {",
+              "    pm.response.to.have.status(404);",
+              "});",
+              "",
+              "pm.test('respons DELETE error memiliki format yang benar', function () {",
+              "    const body = pm.response.json();",
+              "    pm.expect(body.status).to.eql('error');",
+              "    pm.expect(body).to.have.property('message');",
+              "    pm.expect(body.data).to.eql(null);",
+              "});"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
