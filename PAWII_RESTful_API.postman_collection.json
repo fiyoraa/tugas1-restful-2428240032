@@ -1,0 +1,246 @@
+{
+  "info": {
+    "_postman_id": "2428240032-pawii-tugas-3",
+    "name": "PAWII - RESTful API Tugas 3",
+    "description": "Pengujian MongoDB, embedded alamat, reference prodiId, dan query endpoint mahasiswa.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "A. Persiapan Data",
+      "item": [
+        {
+          "name": "GET Daftar Prodi",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "const prodiData = pm.response.json();",
+                  "pm.expect(prodiData).to.be.an('array').that.is.not.empty;",
+                  "pm.environment.set('prodiId', prodiData[0]._id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/prodi"
+          }
+        }
+      ]
+    },
+    {
+      "name": "B. Mahasiswa - Query MongoDB",
+      "item": [
+        {
+          "name": "GET Filter Pagination Sorting Projection",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "const listBody = pm.response.json();",
+                  "pm.expect(listBody.data).to.be.an('array');",
+                  "pm.expect(listBody).to.include.all.keys('data', 'page', 'limit', 'total', 'totalPages');",
+                  "pm.expect(listBody.page).to.eql(1);",
+                  "pm.expect(listBody.limit).to.eql(5);",
+                  "if (listBody.data.length > 0) {",
+                  "  pm.expect(listBody.data[0]).to.have.property('nama');",
+                  "  pm.expect(listBody.data[0]).to.have.property('nim');",
+                  "  pm.expect(listBody.data[0]).to.have.property('alamat');",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/mahasiswa?kota=Palembang&page=1&limit=5&sort=-nama&fields=nama,nim,alamat,prodiId"
+          }
+        },
+        {
+          "name": "GET Semua Mahasiswa",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "pm.expect(pm.response.json().data).to.be.an('array');"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/mahasiswa?page=1&limit=10"
+          }
+        },
+        {
+          "name": "POST Tambah Mahasiswa - Embedded dan Reference",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 201', function () {",
+                  "  pm.response.to.have.status(201);",
+                  "});",
+                  "const mahasiswaData = pm.response.json();",
+                  "pm.expect(mahasiswaData.alamat).to.be.an('object');",
+                  "pm.expect(mahasiswaData.prodiId).to.exist;",
+                  "pm.environment.set('mahasiswaId', mahasiswaData._id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-api-key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nama\": \"Citra Tugas 3\",\n  \"nim\": \"2409999\",\n  \"alamat\": {\n    \"jalan\": \"Jl. Contoh No. 99\",\n    \"kota\": \"Palembang\"\n  },\n  \"prodiId\": \"{{prodiId}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{base_url}}/mahasiswa"
+          }
+        },
+        {
+          "name": "GET Detail Mahasiswa dengan Populate",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "const detailData = pm.response.json();",
+                  "pm.expect(detailData.alamat).to.be.an('object');",
+                  "pm.expect(detailData.prodiId).to.have.property('kode');"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/mahasiswa/{{mahasiswaId}}"
+          }
+        },
+        {
+          "name": "PUT Ubah Mahasiswa",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-api-key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nama\": \"Citra Tugas 3 Updated\",\n  \"alamat\": {\n    \"jalan\": \"Jl. Baru No. 99\",\n    \"kota\": \"Indralaya\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{base_url}}/mahasiswa/{{mahasiswaId}}"
+          }
+        },
+        {
+          "name": "DELETE Mahasiswa",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "url": "{{base_url}}/mahasiswa/{{mahasiswaId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "C. Skenario Gagal",
+      "item": [
+        {
+          "name": "GET Sort Tidak Diizinkan (400)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/mahasiswa?sort=fieldRahasia"
+          }
+        },
+        {
+          "name": "POST Tanpa API Key (401)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nama\": \"Tanpa Kunci\",\n  \"nim\": \"2409998\",\n  \"alamat\": { \"jalan\": \"Jl. Contoh\", \"kota\": \"Palembang\" },\n  \"prodiId\": \"{{prodiId}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{base_url}}/mahasiswa"
+          }
+        },
+        {
+          "name": "GET Mahasiswa Tidak Ditemukan (404)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/mahasiswa/000000000000000000000000"
+          }
+        }
+      ]
+    }
+  ]
+}
